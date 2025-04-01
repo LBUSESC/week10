@@ -25,10 +25,6 @@ import static org.mockito.Mockito.verify;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class StudentIntegrationTest {
 
-    @Container
-    @ServiceConnection
-    static MySQLContainer mySQLContainer = new MySQLContainer("mysql:latest");
-
     @Autowired
     private StudentService studentService;
     @Autowired
@@ -36,6 +32,11 @@ class StudentIntegrationTest {
     @Autowired
     TestRestTemplate testRestTemplate;
     private Student student;
+
+    @Container
+    @ServiceConnection
+    static MySQLContainer mySQLContainer = new MySQLContainer("mysql:latest");
+
 
     @Test
     void contextLoads() {
@@ -88,7 +89,6 @@ class StudentIntegrationTest {
         assertThat(response.getBody().getLastName()).isEqualTo(student.getLastName());
         assertThat(response.getBody().getEmail()).isEqualTo("s.kumar@leedsbeckett.ac.uk");
     }
-
 
     @Test
     void shouldUpdateStudentById() {
