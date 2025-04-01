@@ -30,59 +30,48 @@ class StudentIntegrationTest {
     static MySQLContainer mySQLContainer = new MySQLContainer("mysql:latest");
 
     @Autowired
-    TestRestTemplate testRestTemplate;
-    @Autowired
     private StudentService studentService;
-
     @Autowired
     private StudentRepository studentRepository;
-
+    @Autowired
+    TestRestTemplate testRestTemplate;
     private Student student;
 
     @Test
-    @Disabled
     void contextLoads() {
         mySQLContainer.start();
         assertTrue(mySQLContainer.isRunning());
     }
 
-    @BeforeAll
-    static void setUpAll() {
-        mySQLContainer.start();
-    }
-    @AfterAll
-    static void tearDownAll() {
-        mySQLContainer.stop();
-    }
-
     @BeforeEach
     void setUp() {
          student = new Student(111l,"Satish","Kumar",
-                "s.kumar@leedsbeckett.ac.uk","PhD","Leeds Beckett University");
+                "s.kumar@leedsbeckett.ac.uk","PhD",
+                 "Leeds Beckett University");
     }
 
     @AfterEach
-    @Disabled
     void tearDown() {
         studentRepository.deleteAll();
     }
+
 
     @Test
     void shouldCreateStudentRecord() {
         // Given - student object is created in the setUp method
 
-
         // When - send a POST request to create a student
-        ResponseEntity<Student> response = testRestTemplate.postForEntity("/student/create", student, Student.class);
+        ResponseEntity<Student> response = testRestTemplate
+                .postForEntity("/student/create", student, Student.class);
 
         // Then - verify the response
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
         assertThat(response.getBody().getStudentId()).isEqualTo(111l);
         assertThat(response.getBody().getFirstName()).isEqualTo("Satish");
+        assertThat(response.getBody().getLastName()).isEqualTo("Kumar");
 
     }
-
 
     @Test
     void shouldGetStudentById() {
@@ -90,7 +79,8 @@ class StudentIntegrationTest {
         studentService.saveStudent(student);
 
         // When - send a GET request to retrieve the student by ID
-        ResponseEntity<Student> response = testRestTemplate.getForEntity("/student/" + student.getStudentId(), Student.class);
+        ResponseEntity<Student> response = testRestTemplate.getForEntity("/student/" + student
+                .getStudentId(), Student.class);
 
         // Then - verify the response
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
@@ -109,7 +99,9 @@ class StudentIntegrationTest {
         Student updatedStudent = new Student(111l, "Satish", "Malik",
                 "satish@bham.ac.uk", "PhD", "University of Birmingham");
 
-        ResponseEntity<Student> response = testRestTemplate.exchange("/student/" + student.getStudentId(), HttpMethod.PUT, new HttpEntity<>(updatedStudent), Student.class);
+        ResponseEntity<Student> response = testRestTemplate.exchange("/student/" + student
+                        .getStudentId(), HttpMethod.PUT,
+                new HttpEntity<>(updatedStudent), Student.class);
 
         // Then - verify the response
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
@@ -120,14 +112,14 @@ class StudentIntegrationTest {
         assertThat(response.getBody().getUniversity()).isEqualTo("University of Birmingham");
     }
 
-
     @Test
     void shouldDeleteStudentById() {
         // Given - a student is created in the database
         studentService.saveStudent(student);
 
         // When - send a DELETE request to delete the student by ID
-        ResponseEntity<Void> response = testRestTemplate.exchange("/student/" + student.getStudentId(), HttpMethod.DELETE, null, Void.class);
+        ResponseEntity<Void> response = testRestTemplate.exchange("/student/" + student
+                .getStudentId(), HttpMethod.DELETE, null, Void.class);
 
         // Then - verify the response
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);

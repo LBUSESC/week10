@@ -27,31 +27,11 @@ public class StudentController {
         return new ResponseEntity<>(createdStudent, HttpStatus.CREATED);
     }
 
-
-
-
-
-
-
     @GetMapping("/{studentId}")
     public ResponseEntity<Student> getStudentById(@PathVariable long studentId) {
         log.info("Get Student() from Controller Layer: {}");
         Student student = studentService.getStudentById(studentId);
         return new ResponseEntity<>(student, HttpStatus.OK);
-    }
-    @PutMapping("/{studentId}")
-    public ResponseEntity<Student> updateStudentById(
-            @PathVariable long studentId,
-            @RequestBody Student updatedStudent) {
-        log.info("Update Student() from Controller Layer: {}");
-        Student student = studentService.updateStudentById(studentId, updatedStudent);
-        return new ResponseEntity<>(student, HttpStatus.OK);
-    }
-    @DeleteMapping("/{studentId}")
-    public ResponseEntity<Void> deleteStudentById(@PathVariable long studentId) {
-        log.info("Delete Student() from Controller Layer: {}");
-        studentService.deleteStudentById(studentId);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @GetMapping
@@ -61,4 +41,19 @@ public class StudentController {
         return new ResponseEntity<>(studentList, HttpStatus.OK);
     }
 
+    @PutMapping("/{studentId}")
+    public ResponseEntity<Student> updateStudentById(
+            @PathVariable long studentId,
+            @RequestBody Student updatedStudent) {
+        log.info("Update Student() from Controller Layer: {}");
+        Student student = studentService.updateStudentById(studentId, updatedStudent);
+        return new ResponseEntity<>(student, HttpStatus.OK);
+    }
+
+    @DeleteMapping("/{studentId}")
+    public ResponseEntity<Void> deleteStudentById(@PathVariable long studentId) {
+        log.info("Delete Student() from Controller Layer: {}");
+        studentService.deleteStudentById(studentId);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
 }
